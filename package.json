@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "install": "^0.13.0",
+    "mongoose": "^9.4.1",
     "next": "16.2.2",
     "npm": "^11.12.1",
     "ogl": "^1.0.11",
