@@ -29,6 +29,9 @@ async function connectDB(): Promise<typeof mongoose> {
         const options = {
             bufferCommands: false,
             maxPoolSize: 10,
+            serverSelectionTimeoutMS: 30000,
+            connectTimeoutMS: 30000,
+            socketTimeoutMS: 300000,
         };
 
         //store the pending Promise, not the result.

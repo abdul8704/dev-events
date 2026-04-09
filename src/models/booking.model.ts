@@ -43,25 +43,30 @@ BookingSchema.pre('save', async function () {
     // Only validate eventId if it's new or modified
     if (booking.isModified('eventId') || booking.isNew) {
         try {
-            // Your existing DB check
-            const eventExists = await mongoose.models.Event.findById(booking.eventId).select('_id');
+            // Use the imported Event model to check existence
+            const eventExists = await Event.findById(booking.eventId).select('_id');
 
             if (!eventExists) {
-                // 2. Simply throw the error instead of using next(error)
+                // Throw ValidationError when event is not found
                 const error = new Error(`Event with ID ${booking.eventId} does not exist`);
                 error.name = 'ValidationError';
                 throw error;
             }
         } catch (err: any) {
-            // 3. Catch and re-throw formatting/database errors
-            // If it's already our custom validation error, re-throw it
+            // Convert only CastError (invalid ID format) to ValidationError
+            if (err.name === 'CastError') {
+                const validationError = new Error('Invalid event ID format');
+                validationError.name = 'ValidationError';
+                throw validationError;
+            }
+
+            // Re-throw ValidationError as-is
             if (err.name === 'ValidationError') {
                 throw err;
             }
 
-            const validationError = new Error('Invalid events ID format or database error');
-            validationError.name = 'ValidationError';
-            throw validationError;
+            // Re-throw all other errors (DB connection, operational errors) unchanged
+            throw err;
         }
     }
     // 4. No need to call next() at the end!
