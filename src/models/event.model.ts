@@ -132,7 +132,12 @@ EventSchema.pre('save', function (next: mongoose.CallbackWithoutResultAndOptiona
     next();
 });
 
-// Helper function to generate URL-friendly slug
+/**
+ * Create a URL-friendly slug from a text title.
+ *
+ * @param title - The input string to convert into a slug
+ * @returns The slugified version of `title`: lowercase, spaces replaced by single hyphens, characters other than letters a–z and digits 0–9 removed, consecutive hyphens collapsed, and no leading or trailing hyphens
+ */
 function generateSlug(title: string): string {
     return title
         .toLowerCase()
