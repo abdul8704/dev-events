@@ -143,7 +143,6 @@ EventSchema.pre('save', async  function () {
     if (event.isModified('time')) {
         event.time = normalizeTime(event.time);
     }
-
 });
 
 // Helper function to generate URL-friendly slug

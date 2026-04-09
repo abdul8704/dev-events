@@ -37,10 +37,6 @@ function normalizeTime(timeString: string): string {
     const period = match[4]?.toUpperCase();
 
     if (period) {
-        if (hours < 1 || hours > 12) {
-            throw new Error('Invalid 12-hour time');
-        }
-
         // Convert 12-hour to 24-hour format
         if (period === 'PM' && hours !== 12) hours += 12;
         if (period === 'AM' && hours === 12) hours = 0;
