@@ -36,6 +36,19 @@ const BookingSchema = new Schema<IBooking>(
     }
 );
 
+function createValidationError(path: string, message: string, value?: unknown): mongoose.Error.ValidationError {
+    const validationError = new mongoose.Error.ValidationError();
+    validationError.addError(
+        path,
+        new mongoose.Error.ValidatorError({
+            path,
+            message,
+            value,
+        })
+    );
+    return validationError;
+}
+
 // Pre-save hook to validate events exists before creating booking
 BookingSchema.pre('save', async function () {
     const booking = this as IBooking;
@@ -43,21 +56,23 @@ BookingSchema.pre('save', async function () {
     // Only validate eventId if it's new or modified
     if (booking.isModified('eventId') || booking.isNew) {
         try {
-            // Use the imported Event model to check existence
-            const eventExists = await Event.findById(booking.eventId).select('_id');
+            if (!mongoose.isValidObjectId(booking.eventId)) {
+                throw createValidationError('eventId', 'Invalid event ID format', booking.eventId);
+            }
+
+            // Use an existence check rather than hydrating a document we do not need
+            const eventExists = await Event.exists({ _id: booking.eventId });
 
             if (!eventExists) {
-                // Throw ValidationError when event is not found
-                const error = new Error(`Event with ID ${booking.eventId} does not exist`);
-                error.name = 'ValidationError';
-                throw error;
+                throw createValidationError(
+                    'eventId',
+                    `Event with ID ${booking.eventId} does not exist`,
+                    booking.eventId
+                );
             }
         } catch (err: any) {
-            // Convert only CastError (invalid ID format) to ValidationError
             if (err.name === 'CastError') {
-                const validationError = new Error('Invalid event ID format');
-                validationError.name = 'ValidationError';
-                throw validationError;
+                throw createValidationError('eventId', 'Invalid event ID format', booking.eventId);
             }
 
             // Re-throw ValidationError as-is
@@ -71,6 +86,15 @@ BookingSchema.pre('save', async function () {
     }
     // 4. No need to call next() at the end!
     // The async function will naturally resolve and Mongoose will proceed.
+});
+
+BookingSchema.post('save', function (error: any, _doc: IBooking, next: (err?: Error) => void) {
+    if (error?.name === 'MongoServerError' && error.code === 11000) {
+        next(createValidationError('email', 'A booking for this event and email already exists'));
+        return;
+    }
+
+    next(error);
 });
 
 // Create index on eventId for faster queries
