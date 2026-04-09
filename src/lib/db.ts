@@ -20,6 +20,15 @@ if (!global.mongooseConnection) {
     global.mongooseConnection = cached; // declare the cache object with null values, if it's not present
 }
 
+/**
+ * Initialize and return a singleton Mongoose connection.
+ *
+ * If a cached connection already exists it is returned. Otherwise a single shared
+ * connection attempt is started and awaited; if that attempt fails the pending
+ * promise is cleared so future calls can retry.
+ *
+ * @returns The connected `mongoose` instance
+ */
 async function connectDB(): Promise<typeof mongoose> {
     if(cached.conn)         // return the cached connection, if cache hit
         return cached.conn;
