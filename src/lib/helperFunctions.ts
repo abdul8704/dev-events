@@ -1,9 +1,24 @@
 // Helper function to normalize date to ISO format
 function normalizeDate(dateString: string): string {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) {
+    const match = dateString.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) {
         throw new Error('Invalid date format');
     }
+
+    const year = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10);
+    const day = parseInt(match[3], 10);
+
+    if (month < 1 || month > 12) {
+        throw new Error('Invalid date format');
+    }
+
+    const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
+    if (day < 1 || day > daysInMonth) {
+        throw new Error('Invalid date format');
+    }
+
+    const date = new Date(Date.UTC(year, month - 1, day));
     return date.toISOString().split('T')[0]; // Return YYYY-MM-DD format
 }
 
@@ -22,6 +37,10 @@ function normalizeTime(timeString: string): string {
     const period = match[4]?.toUpperCase();
 
     if (period) {
+        if (hours < 1 || hours > 12) {
+            throw new Error('Invalid 12-hour time');
+        }
+
         // Convert 12-hour to 24-hour format
         if (period === 'PM' && hours !== 12) hours += 12;
         if (period === 'AM' && hours === 12) hours = 0;

@@ -111,12 +111,27 @@ const EventSchema = new Schema<IEvent>(
 );
 
 // Pre-save hook for slug generation and data normalization
-EventSchema.pre('save', function (next: mongoose.CallbackWithoutResultAndOptionalError) {
+EventSchema.pre('save', async  function () {
     const event = this as IEvent;
 
     // Generate slug only if title changed or document is new
     if (event.isModified('title') || event.isNew) {
-        event.slug = generateSlug(event.title);
+        const EventModel = event.constructor as mongoose.Model<IEvent>;
+        const baseSlug = generateSlug(event.title);
+        let candidateSlug = baseSlug;
+        let suffix = 1;
+
+        while (
+            await EventModel.findOne({
+                slug: candidateSlug,
+                _id: { $ne: event._id },
+            })
+        ) {
+            candidateSlug = `${baseSlug}-${suffix}`;
+            suffix += 1;
+        }
+
+        event.slug = candidateSlug;
     }
 
     // Normalize date to ISO format if it's not already
@@ -129,7 +144,6 @@ EventSchema.pre('save', function (next: mongoose.CallbackWithoutResultAndOptiona
         event.time = normalizeTime(event.time);
     }
 
-    next();
 });
 
 // Helper function to generate URL-friendly slug
