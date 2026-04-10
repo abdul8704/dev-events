@@ -23,11 +23,12 @@ export async function GET(req: NextRequest, { params }: RouteParams ): Promise<N
         const sanitizedSlug = slug.trim().toLowerCase();
         const data = await EventService.getEventBySlug(sanitizedSlug);
 
-        if(!data){
+        if(!data.data){
             return NextResponse.json({
                 status: 404,
+                success: false,
                 message: "Event not found",
-            })
+            }, { status: 404 })
         }
 
         return NextResponse.json({
@@ -41,6 +42,6 @@ export async function GET(req: NextRequest, { params }: RouteParams ): Promise<N
             status: 500,
             success: false,
             message: err
-        })
+        }, { status: 500 })
     }
 }

@@ -40,33 +40,28 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
     cacheLife('hours');
     const slug = await params;
 
-    let event;
-    try {
-        const request = await fetch(`${BASE_URL}/api/events/${slug}`, {
-            next: { revalidate: 60 }
-        });
+    const request = await fetch(`${BASE_URL}/api/events/${slug}`, {
+        next: { revalidate: 60 }
+    });
 
-        if (!request.ok) {
-            if (request.status === 404) {
-                return notFound();
-            }
-            throw new Error(`Failed to fetch event: ${request.statusText}`);
-        }
+    if (request.status === 404) {
+        notFound();
+    }
 
-        const response = await request.json();
-        event = response.event;
+    if (!request.ok) {
+        throw new Error(`Failed to fetch event: ${request.statusText}`);
+    }
 
-        if (!event) {
-            return notFound();
-        }
-    } catch (error) {
-        console.error('Error fetching event:', error);
-        return notFound();
+    const response = await request.json();
+    const event = response.data;
+
+    if (!event) {
+        notFound();
     }
 
     const { description, image, overview, date, time, location, mode, agenda, audience, tags, organizer } = event;
 
-    if(!description) return notFound();
+    if(!description) notFound();
 
     const bookings = 10;
 
