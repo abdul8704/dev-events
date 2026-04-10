@@ -3,11 +3,12 @@ import ExploreBtn from "@/src/components/ExploreBtn";
 import EventCard from "@/src/components/EventCard";
 import { IEvent } from "@/src/models/event.model"
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+import events from "@/src/lib/constants"
 
 async function FeaturedEvents() {
-    const eventData = await fetch(`${BASE_URL}/api/events`);
-    const { data } = await eventData.json();
-
+    // const eventData = await fetch(`${BASE_URL}/api/events`);
+    // const { data } = await eventData.json();
+const data = events;
     return (
         <ul className="events">
             {data && data.length > 0 && data.map((event: IEvent) => {
