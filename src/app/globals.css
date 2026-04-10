@@ -294,4 +294,98 @@
       }
     }
   }
+
+  #create-event-page {
+    @apply flex flex-col gap-10 pt-8;
+
+    .create-event-hero {
+      @apply grid gap-6 lg:grid-cols-[1.7fr_1fr];
+    }
+
+    .hero-copy {
+      @apply rounded-[18px] border border-dark-200 bg-[radial-gradient(circle_at_top_left,_rgba(89,222,202,0.2),_transparent_45%),linear-gradient(180deg,_rgba(13,22,26,0.96),_rgba(24,40,48,0.92))] px-6 py-8;
+    }
+
+    .eyebrow {
+      @apply mb-4 text-sm uppercase tracking-[0.24em] text-primary;
+    }
+
+    .hero-text {
+      @apply mt-4 max-w-2xl text-light-200;
+    }
+
+    .hero-panel {
+      @apply card-shadow flex flex-col gap-4 rounded-[18px] border border-dark-200 bg-dark-100 px-6 py-8;
+    }
+
+    .panel-label {
+      @apply text-sm uppercase tracking-[0.24em] text-primary;
+    }
+
+    .hero-points {
+      @apply flex flex-col gap-3;
+    }
+
+    .hero-points li {
+      @apply rounded-[10px] border border-dark-200 bg-dark-200/50 px-4 py-3 text-light-100;
+    }
+
+    .create-event-layout {
+      @apply grid items-start gap-8 lg:grid-cols-[1.7fr_0.9fr];
+    }
+
+    .create-event-card {
+      @apply card-shadow flex flex-col gap-8 rounded-[18px] border border-dark-200 bg-dark-100 px-6 py-7;
+    }
+
+    .create-event-card-head {
+      @apply flex flex-col gap-2;
+    }
+
+    .create-event-form {
+      @apply flex flex-col gap-5;
+    }
+
+    .field-grid {
+      @apply grid gap-5;
+    }
+
+    .field-grid-double {
+      @apply md:grid-cols-2;
+    }
+
+    .field-grid-triple {
+      @apply md:grid-cols-3;
+    }
+
+    .field {
+      @apply flex flex-col gap-2;
+    }
+
+    .field span {
+      @apply text-sm font-medium uppercase tracking-[0.16em] text-light-200;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      @apply rounded-[10px] border border-dark-200 bg-dark-200 px-4 py-3 text-light-100 outline-none transition-colors placeholder:text-light-200/70 focus:border-primary;
+    }
+
+    .field input[type="file"] {
+      @apply file:mr-4 file:rounded-[8px] file:border-0 file:bg-primary file:px-4 file:py-2 file:font-semibold file:text-black;
+    }
+
+    .create-event-aside {
+      @apply sticky top-24;
+    }
+
+    .aside-list {
+      @apply mt-5 flex flex-col gap-3;
+    }
+
+    .aside-list p {
+      @apply rounded-[10px] border border-dark-200 bg-dark-200/40 px-4 py-3 text-sm text-light-100;
+    }
+  }
 }

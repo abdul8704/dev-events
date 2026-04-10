@@ -29,11 +29,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         await connectDB();
         const form = await req.formData();
 
-        await EventService.createEvent(form);
+        const data = await EventService.createEvent(form);
         return NextResponse.json({
             status: 201,
-            success: true,
-            message: "Event created",
+            ...data,
         })
     }
     catch(err){

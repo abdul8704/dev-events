@@ -36,12 +36,47 @@ const getEventBySlug = async (slug: string): Promise<ServiceResponse> => {
 
 const createEvent = async (formData: FormData): Promise<ServiceResponse> => {
     try{
-        const event = Object.fromEntries(formData.entries());
-
         const file = formData.get('image') as File;
+        const agenda = formData
+            .getAll('agenda')
+            .map((item) => item.toString().trim())
+            .filter(Boolean);
+        const tags = formData
+            .getAll('tags')
+            .map((item) => item.toString().trim().toLowerCase())
+            .filter(Boolean);
 
         if(!(file instanceof File))
             throw new Error("No file uploaded");
+
+        const event: {
+            title?: string;
+            description?: string;
+            overview?: string;
+            venue?: string;
+            location?: string;
+            date?: string;
+            time?: string;
+            mode?: string;
+            audience?: string;
+            organizer?: string;
+            agenda: string[];
+            tags: string[];
+            image?: string;
+        } = {
+            title: formData.get('title')?.toString().trim(),
+            description: formData.get('description')?.toString().trim(),
+            overview: formData.get('overview')?.toString().trim(),
+            venue: formData.get('venue')?.toString().trim(),
+            location: formData.get('location')?.toString().trim(),
+            date: formData.get('date')?.toString().trim(),
+            time: formData.get('time')?.toString().trim(),
+            mode: formData.get('mode')?.toString().trim(),
+            audience: formData.get('audience')?.toString().trim(),
+            organizer: formData.get('organizer')?.toString().trim(),
+            agenda,
+            tags,
+        };
 
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
@@ -57,11 +92,15 @@ const createEvent = async (formData: FormData): Promise<ServiceResponse> => {
 
         event.image = (uploadResult as { secure_url: string }).secure_url;
 
-        await Event.create(event);
+        const createdEvent = await Event.create(event);
 
         return {
             success: true,
-            message: "All events retrieved",
+            message: "Event created successfully",
+            data: {
+                id: createdEvent._id,
+                slug: createdEvent.slug,
+            },
         }
     }
     catch(err){
