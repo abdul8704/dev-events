@@ -11,9 +11,9 @@ const Navbar = () => {
                 </Link>
 
                 <ul>
-                    <Link href='/public' >Home</Link>
-                    <Link href='/public'>Create Event</Link>
-                    <Link href='/public'></Link>
+                    <Link href='/' >Home</Link>
+                    <Link href='/'>Create Event</Link>
+                    <Link href='/'></Link>
                 </ul>
             </nav>
         </header>

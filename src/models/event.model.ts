@@ -21,6 +21,10 @@ export interface IEvent extends Document {
     updatedAt: Date;
 }
 
+function normalizeLowercaseString(value: string) {
+    return value.trim().toLowerCase();
+}
+
 const EventSchema = new Schema<IEvent>(
     {
         title: {
@@ -61,6 +65,8 @@ const EventSchema = new Schema<IEvent>(
             type: String,
             required: [true, 'Location is required'],
             trim: true,
+            lowercase: true,
+            set: normalizeLowercaseString,
         },
         date: {
             type: String,
@@ -73,6 +79,9 @@ const EventSchema = new Schema<IEvent>(
         mode: {
             type: String,
             required: [true, 'Mode is required'],
+            lowercase: true,
+            trim: true,
+            set: normalizeLowercaseString,
             enum: {
                 values: ['online', 'offline', 'hybrid'],
                 message: 'Mode must be either online, offline, or hybrid',

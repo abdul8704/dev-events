@@ -1,4 +1,4 @@
-@import "../../node_modules/tailwindcss/dist/lib.d.mts";
+@import "tailwindcss";
 @import "../../node_modules/tw-animate-css/dist/tw-animate.css";
 
 @custom-variant dark (&:is(.dark *));
@@ -261,6 +261,22 @@
 
   #book-event {
     @apply flex flex-col gap-6;
+
+    .booking-notice {
+      @apply rounded-[10px] border px-4 py-4;
+    }
+
+    .booking-notice-title {
+      @apply mb-1 text-base font-semibold text-light-100;
+    }
+
+    .booking-notice-registered {
+      @apply border-primary/40 bg-primary/10;
+    }
+
+    .booking-notice-error {
+      @apply border-red-400/40 bg-red-500/10;
+    }
 
     form {
       @apply flex flex-col gap-6;
